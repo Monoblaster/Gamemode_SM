@@ -1,0 +1,5 @@
+id: 2995
+icon: man
+type: Players
+title: First-Person Player
+version: 1

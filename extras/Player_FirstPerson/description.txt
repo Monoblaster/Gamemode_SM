@@ -1,0 +1,3 @@
+Title: First-Person Player
+Author: ::Matt::
+A player that can only see in first person.

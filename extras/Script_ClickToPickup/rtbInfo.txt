@@ -1,0 +1,5 @@
+id: 3952
+icon: hook_16
+type: Server Mods
+title: Click to Pick Up Items
+version: 1
