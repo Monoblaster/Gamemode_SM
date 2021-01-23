@@ -6,7 +6,7 @@ datablock ItemData(badgeItem:HammerItem)
 	ColorShiftColor = "0.8 0.75 0.15 1";
 	image = badgeImage;
 	Projectile = "";
-	iconName = "";
+	iconName = "./icon_badge";
 };
 
 datablock ShapeBaseImageData(badgeImage:HammerImage)

@@ -73,8 +73,7 @@ function zipTieImage::onFire(%this, %obj, %slot){
 		if(%hitObj.getDatablock() != nameToID(ZipTied)){
 			$Sever::ZipTies::ZipTieCooldown[%obj.client.BL_ID] = 2 + $Sim::Time;
 			%obj.playAudio(0,zipTieUseSound);
-		} else
-			%obj.client.chatMessage("\c3They are already restrained");
+		}
 	}
 }
 

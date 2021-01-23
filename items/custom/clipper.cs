@@ -73,7 +73,6 @@ function clipperImage::onFire(%this, %obj, %slot){
 		if(%hitObj.getDatablock() == nameToID(ZipTied)){
 			$Sever::ZipTies::ClipperCooldown[%obj.client.BL_ID] = 2 + $Sim::Time;
 			%obj.playAudio(0,clipperUseSound);
-		} else
-			%obj.client.chatMessage("\c3They are not restrained");
+		}
 	}
 }

@@ -1,7 +1,8 @@
 exec("./extraResources.cs");
-addExtraResource("Add-Ons/Gamemode_SM/items/face.ifl");
+addExtraResource("Add-Ons/Gamemode_SM/items/custom/face.ifl");
 function Player::startZipTie(%player,%restrain){
 	if((%hitObj = ZipTieRaycast(%player,0)) > 0){
+		%player.client.ProgressBar(900,10,0);
 		%player.schedule(1000,finishZipTie,%restrain,%hitObj);
 		return %hitObj;
 	}
@@ -10,9 +11,8 @@ function Player::startZipTie(%player,%restrain){
 function Player::finishZipTie(%player,%restrain,%hitObj){
 	if((%hitObj = ZipTieRaycast(%player,0)) == %hitObj && (%player.tool[%player.currTool] == nameToId("ZipTieItem") && %restrain) || (%player.tool[%player.currTool] == nameToId("ClipperItem") && !%restrain)){
 		%hitObj.zipTie(%restrain,%player);
-		%player.client.centerPrint((%restrain ? "Zip Tie" : "Clipper") SPC "attempt successful",3);
 	} else
-		%player.client.centerPrint((%restrain ? "Zip Tie" : "Clipper") SPC "attempt failed",3);
+		%player.client.centerPrint((%restrain ? "Zip Tie" : "Clipper") SPC "missed",3);
 }
 function Player::zipTie(%this, %restrain, %sender){
 	%playerRoleColor = %this.client.role.color;
@@ -23,7 +23,7 @@ function Player::zipTie(%this, %restrain, %sender){
 	%senderTeamColor = %sender.client.team.color;
 	if(%restrain && %this.getDatablock() != nameToID(ZipTied)){
 		if(isObject(%this.client)){
-			%this.client.centerPrint("You have been restrained",3);
+			%this.client.centerPrint("\c3You have been restrained",3);
 			%this.client.dropAllTools(true);
 			%this.client.team.onRestrained(%this,%sender);
 			%sender.client.team.onRestrain(%sender,%this);
@@ -42,7 +42,7 @@ function Player::zipTie(%this, %restrain, %sender){
 		return true;
 	} else if(!%restrain && %this.getDatablock() == nameToID(ZipTied)){
 		if(isObject(%this.client)){
-			%this.client.centerPrint("You are no longer restrained",3);
+			%this.client.centerPrint("\c3You are no longer restrained",3);
 			%this.client.onUnRestrained(%this,%sender);
 			%sender.client.onUnRestrain(%sender,%this);
 		}
@@ -51,6 +51,14 @@ function Player::zipTie(%this, %restrain, %sender){
 		%this.playThread(0,"root"); 
 		%this.playThread(1,"root"); 
 		return true;
+	} else if(%restrain && %this.getDatablock() == nameToID(ZipTied)){
+		if(isObject(%sender.client)){
+			%sender.client.centerPrint("\c3They are already restrained",3);
+		}
+	} else if(!%restrain && %this.getDatablock() != nameToID(ZipTied)){
+		if(isObject(%sender.client)){
+			%sender.client.centerPrint("\c3They are not restrained",3);
+		}
 	}
 	return false;
 }
@@ -141,6 +149,21 @@ function Player::setupPassport(%this, %fake){
 		%this.passportColor = %this.client.headColor;		
 	}
 }
+
+function GameConnection::ProgressBar(%client,%duration,%divisions,%progress){
+	for(%i = 0; %i < %divisions; %i++){
+		if(%i > %progress)
+			%message = %message @ "\c7|";
+		else
+			%message = %message @ "|";
+	}
+
+	%client.centerPrint(%message, 1);
+	
+	if(%divisions > %progress)
+		%client.schedule(%duration / %divisions, ProgressBar, %duration, %divisions, %progress + 1);
+}
+
 package smItems
 {
    function serverCmdUseTool(%client,%slot)
